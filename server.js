@@ -148,3 +148,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 ሰርቨሩ በወደብ ${PORT} ላይ ሥራ ጀምሯል!`);
 });
+
+// ይህች መስመር ለVercel በጣም ወሳኝ ናት!
+module.exports = app;
+});
