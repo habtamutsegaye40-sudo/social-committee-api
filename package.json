@@ -1,0 +1,16 @@
+{
+  "name": "social-committee-api",
+  "version": "1.0.0",
+  "description": "Social Committee API for Copy Shop Management",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.10.1"
+  }
+}
