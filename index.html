@@ -1,50 +1,33 @@
 <!DOCTYPE html>
 <html lang="am">
-<head>
-    <meta charset="UTF-8">
-    <title>የኮፒ ቤት መቆጣጠሪያ</title>
-</head>
+<head><meta charset="UTF-8"><title>የኮፒ ቤት መቆጣጠሪያ</title></head>
 <body>
     <h1>መረጃ መመዝገቢያ</h1>
     <input type="text" id="memberId" placeholder="የአባል መታወቂያ">
-    <input type="text" id="status" placeholder="ሁኔታ (Status)">
-    <input type="number" id="quantity" placeholder="የወረቀት ብዛት">
+    <input type="text" id="status" placeholder="ሁኔታ">
+    <input type="number" id="quantity" placeholder="ብዛት">
     <button onclick="saveData()">መዝግብ</button>
-
-    <h2>የተመዘገቡ መረጃዎች</h2>
     <div id="result"></div>
-
     <script>
-       const API_URL = 
-
         async function saveData() {
             const data = {
                 memberId: document.getElementById('memberId').value,
                 status: document.getElementById('status').value,
                 quantity: document.getElementById('quantity').value
             };
-
-            const response = await fetch(`${API_URL}/api/copy-shop`, {
+            await fetch('/api/copy-shop', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-
-            if (response.ok) {
-                alert('መረጃው ተመዝግቧል!');
-                loadData();
-            } else {
-                alert('መመዝገብ አልተቻለም');
-            }
+            loadData();
         }
-
         async function loadData() {
-            const response = await fetch(`${API_URL}/api/copy-shop`);
-            const data = await response.json();
+            const res = await fetch('/api/copy-shop');
+            const data = await res.json();
             document.getElementById('result').innerText = JSON.stringify(data);
         }
-
-        loadData(); // ገጹ እንደተከፈተ መረጃውን ያሳይ
+        loadData();
     </script>
 </body>
 </html>
