@@ -2,210 +2,49 @@
 <html lang="am">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>የማኅበራዊ ኮሚቴ ኮፒ ቤት መቆጣጠሪያ</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --dark: #1e293b;
-            --light: #f8fafc;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f1f5f9; color: var(--dark); padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        header { background: var(--primary); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0,1); }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h2 { margin-bottom: 15px; font-size: 1.2rem; color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1px; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; font-size: 1rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #1d4ed8; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { background-color: #f8fafc; font-weight: bold; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
-        .badge-danger { background: #fee2e2; color: var(--danger); }
-        .badge-success { background: #dcfce7; color: var(--success); }
-        .badge-warning { background: #fef9c3; color: #a16207; }
-    </style>
+    <title>የኮፒ ቤት መቆጣጠሪያ</title>
 </head>
 <body>
+    <h1>መረጃ መመዝገቢያ</h1>
+    <input type="text" id="memberId" placeholder="የአባል መታወቂያ">
+    <input type="text" id="status" placeholder="ሁኔታ (Status)">
+    <input type="number" id="quantity" placeholder="የወረቀት ብዛት">
+    <button onclick="saveData()">መዝግብ</button>
 
-<div class="container">
-    <header>
-        <h1>📋 የኮፒ ቤት መቆጣጠሪያ ሲስተም</h1>
-        <p>ማኅበራዊ ኮሚቴ</p>
-    </header>
+    <h2>የተመዘገቡ መረጃዎች</h2>
+    <div id="result"></div>
 
-    <div class="grid">
-        <!-- አዲስ ሽያጭ/ሁኔታ መመዝገቢያ -->
-        <div class="card">
-            <h2>📝 አዲስ መረጃ መመዝገቢያ</h2>
-            <form id="copyForm">
-                <div class="form-group">
-                    <label for="memberId">የአባል ስም / መለያ (ID)</label>
-                    <select id="memberId" required>
-                        <option value="">አባል ይምረጡ...</option>
-                        <option value="1">አባል 1</option>
-                        <option value="2">አባል 2</option>
-                        <option value="3">አባል 3</option>
-                        <option value="4">አባል 4</option>
-                        <option value="5">አባል 5</option>
-                        <option value="6">አባል 6</option>
-                        <option value="7">አባል 7</option>
-                        <option value="8">አባል 8</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="status">የወረቀት ሁኔታ</label>
-                    <select id="status" required>
-                        <option value="Unsold">ያልተሸጠ (በክሬዲት/በክምችት ያለ)</option>
-                        <option value="Wasted">የባከነ / የተበላሸ (Wasted)</option>
-                        <option value="Damaged">የተጎዳ (Damaged)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="quantity">የወረቀት ብዛት (በቁጥር)</label>
-                    <input type="number" id="quantity" min="1" required placeholder="ለምሳሌ፦ 50">
-                </div>
-                <button type="submit" class="btn-primary">መዝግብ</button>
-            </form>
-        </div>
+    <script>
+       const API_URL = 'https://social-committee-api-cd7s.vercel.app';
 
-        <!-- አጠቃላይ ሪፖርት ማጠቃለያ -->
-        <div class="card">
-            <h2>📊 ወቅታዊ የክምችት ሁኔታ</h2>
-            <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 20px;">
-                <div>
-                    <h3 id="totalUnsold" style="color: #a16207; font-size: 2rem;">0</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">ያልተሸጠ</p>
-                </div>
-                <div>
-                    <h3 id="totalWasted" style="color: var(--danger); font-size: 2rem;">0</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">የባከነ</p>
-                </div>
-                <div>
-                    <h3 id="totalDamaged" style="color: #475569; font-size: 2rem;">0</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">የተጎዳ</p>
-                </div>
-            </div>
-        </div>
-    </div>
+        async function saveData() {
+            const data = {
+                memberId: document.getElementById('memberId').value,
+                status: document.getElementById('status').value,
+                quantity: document.getElementById('quantity').value
+            };
 
-    <!-- የቅርብ ጊዜ እንቅስቃሴዎች ስንጠረዥ -->
-    <div class="card">
-        <h2>📜 የቅርብ ጊዜ የተመዘገቡ መረጃዎች</h2>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>የአባል ID</th>
-                        <th>ሁኔታ</th>
-                        <th>ብዛት</th>
-                        <th>ቀን</th>
-                    </tr>
-                </thead>
-                <tbody id="logTableBody">
-                    <tr>
-                        <td colspan="4" style="text-align: center; color: #94a3b8;">መረጃ በመጫን ላይ...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<script>
-    // በVercel የተሰጠን እውነተኛ የኢንተርኔት ሊንክ
-    const API_URL = "https://social-committee-api-cd7s.vercel.app";
-
-    // መረጃዎችን ከዳታቤዝ አምጥቶ የሚያሳይ ፈንክሽን
-    async function fetchLogs() {
-        try {
-            const response = await fetch(`${API_URL}/api/copy-shop`);
-            const data = await response.json();
-            
-            const tbody = document.getElementById('logTableBody');
-            tbody.innerHTML = '';
-            
-            let unsold = 0, wasted = 0, damaged = 0;
-            
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;">ምንም የተመዘገበ መረጃ የለም።</td></tr>`;
-                return;
-            }
-
-            data.forEach(log => {
-                // ድምር ለማስላት
-                if(log.status === 'Unsold') unsold += log.quantity;
-                if(log.status === 'Wasted') wasted += log.quantity;
-                if(log.status === 'Damaged') damaged += log.quantity;
-
-                // የቅጽ ሁኔታ ከለር ለመስጠት
-                let badgeClass = 'badge-warning';
-                if(log.status === 'Wasted') badgeClass = 'badge-danger';
-                if(log.status === 'Damaged') badgeClass = 'badge-danger';
-
-                const date = new Date(log.created_at).toLocaleDateString('am-ET');
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>አባል ${log.member_id}</td>
-                        <td><span class="badge ${badgeClass}">${log.status}</span></td>
-                        <td>${log.quantity} ሉክ</td>
-                        <td>${date}</td>
-                    </tr>
-                `;
-            });
-
-            // ሪፖርቱን ስክሪን ላይ ማደስ
-            document.getElementById('totalUnsold').innerText = unsold;
-            document.getElementById('totalWasted').innerText = wasted;
-            document.getElementById('totalDamaged').innerText = damaged;
-
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            document.getElementById('logTableBody').innerHTML = `<tr><td colspan="4" style="text-align: center; color: red;">መረጃዎችን ከሰርቨር ማምጣት አልተቻለም!</td></tr>`;
-        }
-    }
-
-    // አዲስ መረጃ ሲመዘገብ ወደ ሰርቨር የሚልክ
-    document.getElementById('copyForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const memberId = document.getElementById('memberId').value;
-        const status = document.getElementById('status').value;
-        const quantity = document.getElementById('quantity').value;
-
-        try {
             const response = await fetch(`${API_URL}/api/copy-shop`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ memberId, status, quantity })
+                body: JSON.stringify(data)
             });
 
             if (response.ok) {
-                alert('መረጃው በተሳካ ሁኔታ ተመዝግቧል! 🎉');
-                document.getElementById('copyForm').reset();
-                fetchLogs(); // ሰንጠረዡን በቅጽበት ማደስ
+                alert('መረጃው ተመዝግቧል!');
+                loadData();
             } else {
-                alert('መረጃውን መመዝገብ አልተቻለም። እባክዎ እንደገና ይሞክሩ።');
+                alert('መመዝገብ አልተቻለም');
             }
-        } catch (error) {
-            console.error('Error posting data:', error);
-            alert('ከነፃ ሰርቨሩ ጋር መገናኘት አልተቻለም!');
         }
-    });
 
-    // ገጹ ሲከፈት ወዲያው መረጃዎችን እንዲያመጣ ማድረግ
-    window.onload = fetchLogs;
-</script>
+        async function loadData() {
+            const response = await fetch(`${API_URL}/api/copy-shop`);
+            const data = await response.json();
+            document.getElementById('result').innerText = JSON.stringify(data);
+        }
 
+        loadData(); // ገጹ እንደተከፈተ መረጃውን ያሳይ
+    </script>
 </body>
 </html>
